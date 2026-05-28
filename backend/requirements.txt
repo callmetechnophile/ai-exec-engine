@@ -10,3 +10,5 @@ pymupdf4llm
 chromadb
 sentence-transformers
 fal-client
+fpdf
+requests
