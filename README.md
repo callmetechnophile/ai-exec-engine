@@ -46,6 +46,7 @@ Create a `keys.env` file in the `backend` directory with your API keys:
 GROQ_API_KEY=your_key_here
 TAVILY_API_KEY=your_key_here
 FAL_KEY=your_key_here
+NVIDIA_API_KEY=your_key_here
 ```
 Run the FastAPI server:
 ```bash
