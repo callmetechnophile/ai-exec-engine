@@ -6,6 +6,7 @@ from services.memory_service import cache_engineering_knowledge, retrieve_engine
 from services.workspace_service import create_workspace, save_workspace
 from services.decision_trace_service import generate_decision_trace
 from services.versioning_service import fork_version
+from services.export_service import generate_exports
 
 active_pipelines = {}
 
@@ -81,6 +82,14 @@ async def run_pipeline(task_id: str, query: str, budget: int, complexity: str, t
         
         state["current_agent"] = "Complete"
         state["status"] = "DONE"
+        
+        # Generate export files and attach their paths to the state
+        try:
+            export_paths = generate_exports(state)
+            state.update(export_paths)
+            state["logs"].append("[Orchestrator] Generated export documents successfully.")
+        except Exception as ex:
+            state["logs"].append(f"[Orchestrator] Failed to generate exports: {ex}")
         
         if existing_workspace_id:
             save_workspace(task_id, state)
