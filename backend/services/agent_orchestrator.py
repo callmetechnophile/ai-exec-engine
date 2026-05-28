@@ -11,6 +11,21 @@ from services.export_service import generate_exports
 active_pipelines = {}
 
 async def run_pipeline(task_id: str, query: str, budget: int, complexity: str, time_constraint: str, existing_workspace_id: str = None):
+    """
+    Executes the multi-agent engineering pipeline autonomously.
+    
+    This function acts as the central orchestrator, passing the project state
+    sequentially through the retrieval, extraction, research, optimization, 
+    validation, simulation, deployment, and planning agents.
+    
+    Args:
+        task_id (str): Unique identifier for the orchestration task.
+        query (str): User's engineering project prompt.
+        budget (int): Maximum budget constraint in INR.
+        complexity (str): Desired complexity level (Easy, Medium, Hard).
+        time_constraint (str): Time constraint for the project.
+        existing_workspace_id (str, optional): ID of an existing workspace to iterate on, if any.
+    """
     
     if existing_workspace_id and existing_workspace_id in active_pipelines:
         state = active_pipelines[existing_workspace_id]
