@@ -17,7 +17,8 @@ export default function ExecutionPackage({ query, budget, complexity, time }: an
     if (taskId && state?.status !== "DONE" && state?.status !== "ERROR") {
       interval = setInterval(async () => {
         try {
-          const res = await fetch(`http://localhost:8000/api/orchestrator-status/${taskId}`);
+          const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+          const res = await fetch(`${API_URL}/api/orchestrator-status/${taskId}`);
           const data = await res.json();
           setState(data);
         } catch (e) {
@@ -34,7 +35,8 @@ export default function ExecutionPackage({ query, budget, complexity, time }: an
     setErrorMsg("");
     try {
       const payload = { query, budget, complexity, time };
-      const res = await fetch("http://localhost:8000/api/start-orchestrator", {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const res = await fetch(`${API_URL}/api/start-orchestrator`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -58,7 +60,8 @@ export default function ExecutionPackage({ query, budget, complexity, time }: an
     if (!path) return;
     const filename = path.split('/').pop();
     const type = path.split('/')[1];
-    window.open(`http://localhost:8000/api/export/${type}/${filename}`, "_blank");
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+    window.open(`${API_URL}/api/export/${type}/${filename}`, "_blank");
   };
 
   if (!state && !taskId) {

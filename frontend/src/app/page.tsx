@@ -71,7 +71,8 @@ export default function Home() {
     formData.append("file", audioBlob, "recording.webm");
 
     try {
-      const res = await fetch("http://localhost:8000/api/speech-to-text", {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const res = await fetch(`${API_URL}/api/speech-to-text`, {
         method: "POST",
         body: formData,
       });
@@ -95,7 +96,8 @@ export default function Home() {
     setErrorMsg("");
     setDeepResults(null); // Reset deep analysis
     try {
-      const res = await fetch("http://localhost:8000/api/analyze-project", {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const res = await fetch(`${API_URL}/api/analyze-project`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: searchQuery }),
@@ -136,7 +138,8 @@ export default function Home() {
         time: TIMEFRAMES[timeframeIdx[0]]
       };
 
-      const res = await fetch("http://localhost:8000/api/advance-research", {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const res = await fetch(`${API_URL}/api/advance-research`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -169,7 +172,8 @@ export default function Home() {
         mcu_type: selectedMcu
       };
 
-      const res = await fetch("http://localhost:8000/api/generate-code", {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const res = await fetch(`${API_URL}/api/generate-code`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
