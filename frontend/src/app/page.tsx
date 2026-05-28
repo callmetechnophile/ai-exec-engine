@@ -344,7 +344,7 @@ export default function Home() {
                   <CardDescription>{COMPLEXITY_LEVELS[complexityIdx[0]]}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Slider value={complexityIdx} onValueChange={setComplexityIdx} max={2} step={1} />
+                  <Slider value={complexityIdx} onValueChange={(val) => setComplexityIdx(val as number[])} max={2} step={1} />
                 </CardContent>
               </Card>
               <Card className="flex-1 bg-card/50">
@@ -353,7 +353,7 @@ export default function Home() {
                   <CardDescription>{TIMEFRAMES[timeframeIdx[0]]}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Slider value={timeframeIdx} onValueChange={setTimeframeIdx} max={4} step={1} />
+                  <Slider value={timeframeIdx} onValueChange={(val) => setTimeframeIdx(val as number[])} max={4} step={1} />
                 </CardContent>
               </Card>
             </div>
