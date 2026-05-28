@@ -298,7 +298,7 @@ export default function Home() {
                   <CardTitle className="text-lg">Budget Filter</CardTitle>
                   <CardDescription>Max price per component (₹)</CardDescription>
                   <div className="flex items-center gap-4 mt-2">
-                    <Slider value={budget} onValueChange={setBudget} max={50000} step={100} className="flex-1" />
+                    <Slider value={budget} onValueChange={(val) => setBudget(val as number[])} max={50000} step={100} className="flex-1" />
                     <Input type="number" value={budget[0] ?? 0} onChange={(e) => setBudget([Number(e.target.value) || 0])} className="w-20 text-right h-8" />
                   </div>
                 </CardHeader>
