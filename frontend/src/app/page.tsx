@@ -204,10 +204,10 @@ export default function Home() {
   return (
     <main className="min-h-screen text-foreground p-8 flex flex-col items-center">
       <div className="w-full max-w-5xl flex flex-col items-center gap-8 mt-12 mb-12 text-center">
-        <h1 className="text-6xl md:text-8xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-indigo-400 via-purple-400 to-emerald-400 drop-shadow-sm pb-2">
+        <h1 className="text-4xl sm:text-6xl md:text-8xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-indigo-400 via-purple-400 to-emerald-400 drop-shadow-sm pb-2">
           WORKFLOWGUIDE.AI
         </h1>
-        <p className="text-xl md:text-2xl font-bold tracking-widest text-muted-foreground uppercase opacity-80">
+        <p className="text-lg sm:text-xl md:text-2xl font-bold tracking-widest text-muted-foreground uppercase opacity-80">
           IDEA → EXECUTION
         </p>
 
