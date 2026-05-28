@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+python-multipart
+pydantic
+python-dotenv
+httpx
+groq
+openai
+pymupdf4llm
+chromadb
+sentence-transformers
+fal-client

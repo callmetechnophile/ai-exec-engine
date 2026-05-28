@@ -1,0 +1,10 @@
+keys.env
+.env
+__pycache__/
+*.pyc
+workspaces/
+execution_logs/
+knowledge_graph/
+memory/
+research_cache/
+exports/
