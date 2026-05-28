@@ -1,27 +1,29 @@
 import os
-import chromadb
-from chromadb.config import Settings
+import json
 
 # Persistent local memory for Phase 4 engineering caching
-MEMORY_DIR = os.path.join(os.path.dirname(__file__), "..", "memory")
+# Replacing ChromaDB with a simple lightweight disk cache to prevent OOM crashes
+MEMORY_FILE = os.path.join(os.path.dirname(__file__), "..", "memory", "cache.json")
 
-client = chromadb.PersistentClient(path=MEMORY_DIR)
-collection = client.get_or_create_collection(name="engineering_memory")
+def _load_cache():
+    if os.path.exists(MEMORY_FILE):
+        try:
+            with open(MEMORY_FILE, "r") as f:
+                return json.load(f)
+        except Exception:
+            return {}
+    return {}
+
+def _save_cache(cache):
+    os.makedirs(os.path.dirname(MEMORY_FILE), exist_ok=True)
+    with open(MEMORY_FILE, "w") as f:
+        json.dump(cache, f)
 
 def cache_engineering_knowledge(query_id: str, knowledge_data: dict):
-    import json
-    collection.upsert(
-        documents=[json.dumps(knowledge_data)],
-        metadatas=[{"type": "engineering_execution"}],
-        ids=[query_id]
-    )
+    cache = _load_cache()
+    cache[query_id] = knowledge_data
+    _save_cache(cache)
 
 def retrieve_engineering_knowledge(query_id: str) -> dict:
-    import json
-    results = collection.get(ids=[query_id])
-    if results and results.get("documents") and len(results["documents"]) > 0:
-        try:
-            return json.loads(results["documents"][0])
-        except Exception:
-            return None
-    return None
+    cache = _load_cache()
+    return cache.get(query_id, None)
