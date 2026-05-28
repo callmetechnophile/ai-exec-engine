@@ -298,7 +298,7 @@ export default function Home() {
                   <CardTitle className="text-lg">Budget Filter</CardTitle>
                   <CardDescription>Max price per component (₹)</CardDescription>
                   <div className="flex items-center gap-4 mt-2">
-                    <Slider value={budget} onValueChange={(val) => setBudget(val as number[])} max={50000} step={100} className="flex-1" />
+                    <Slider value={budget} onValueChange={(val) => setBudget(Array.isArray(val) ? val : [val as number])} max={50000} step={100} className="flex-1" />
                     <Input type="number" value={budget[0] ?? 0} onChange={(e) => setBudget([Number(e.target.value) || 0])} className="w-20 text-right h-8" />
                   </div>
                 </CardHeader>
@@ -344,7 +344,7 @@ export default function Home() {
                   <CardDescription>{COMPLEXITY_LEVELS[complexityIdx[0]]}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Slider value={complexityIdx} onValueChange={(val) => setComplexityIdx(val as number[])} max={2} step={1} />
+                  <Slider value={complexityIdx} onValueChange={(val) => setComplexityIdx(Array.isArray(val) ? val : [val as number])} max={2} step={1} />
                 </CardContent>
               </Card>
               <Card className="flex-1 bg-card/50">
@@ -353,7 +353,7 @@ export default function Home() {
                   <CardDescription>{TIMEFRAMES[timeframeIdx[0]]}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Slider value={timeframeIdx} onValueChange={(val) => setTimeframeIdx(val as number[])} max={4} step={1} />
+                  <Slider value={timeframeIdx} onValueChange={(val) => setTimeframeIdx(Array.isArray(val) ? val : [val as number])} max={4} step={1} />
                 </CardContent>
               </Card>
             </div>
