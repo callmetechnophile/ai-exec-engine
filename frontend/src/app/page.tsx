@@ -412,7 +412,7 @@ export default function Home() {
                     </CardHeader>
                     <CardContent>
                       <ul className="list-disc pl-4 flex flex-col gap-3">
-                        {deepResults.engineering_insights?.map((insight: str, idx: number) => (
+                        {deepResults.engineering_insights?.map((insight: string, idx: number) => (
                           <li key={idx} className="text-sm">{insight}</li>
                         ))}
                       </ul>
