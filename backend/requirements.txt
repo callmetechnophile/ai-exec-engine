@@ -11,3 +11,4 @@ pymupdf4llm
 fal-client
 fpdf
 requests
+huggingface_hub
