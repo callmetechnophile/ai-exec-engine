@@ -255,8 +255,8 @@ export default function Home() {
       </div>
 
       <div className="w-full max-w-5xl flex flex-col items-center gap-8 mt-12 mb-12 text-center">
-        <h1 className="text-4xl sm:text-6xl md:text-8xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-indigo-400 via-purple-400 to-emerald-400 drop-shadow-sm pb-2">
-          WORKFLOWGUIDE.AI
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-wider text-transparent bg-clip-text bg-gradient-to-br from-white/95 via-white/70 to-white/30 drop-shadow-[0_4px_12px_rgba(255,255,255,0.2)] filter backdrop-blur-[2px] pb-2">
+          𝚆𝙾𝚁𝙺𝙵𝙻𝙾𝚆𝙶𝚄𝙸𝙳𝙴.𝙰𝙸
         </h1>
         <div className="flex flex-col gap-2">
           <p className="text-lg sm:text-xl md:text-2xl font-bold tracking-widest text-white uppercase opacity-80">
