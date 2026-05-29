@@ -223,7 +223,7 @@ export default function Home() {
           <p className="text-lg sm:text-xl md:text-2xl font-bold tracking-widest text-muted-foreground uppercase opacity-80">
             IDEA → EXECUTION
           </p>
-          <p className="text-muted-foreground italic">
+          <p className="text-white italic">
             Hey Builder, Wassup! , Wanna build something new
           </p>
         </div>
