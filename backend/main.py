@@ -1,12 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from dotenv import load_dotenv
 import os
 
 # Load the environment variables from keys.env before importing any modules
 load_dotenv(os.path.join(os.path.dirname(__file__), "keys.env"))
 
-from routes import analyze, speech, research, agentic, export, orchestrator, workspace
+from routes import analyze, speech, research, agentic, export, orchestrator, workspace, chat_recommendation
 
 app = FastAPI(
     title="Engineering Research Assistant API",
@@ -30,6 +31,7 @@ app.include_router(agentic.router, prefix="/api", tags=["agentic"])
 app.include_router(export.router, prefix="/api", tags=["export"])
 app.include_router(orchestrator.router, prefix="/api", tags=["orchestrator"])
 app.include_router(workspace.router, prefix="/api", tags=["workspace"])
+app.include_router(chat_recommendation.router, prefix="/api", tags=["chat_recommendation"])
 
 @app.get("/health")
 async def health_check():

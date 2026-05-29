@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Download, CheckCircle2, Info, AlertTriangle, Cpu, Server, History, Activity } from "lucide-react";
-import FrappeGantt from "@/components/gantt/FrappeGantt";
+import { Download, CheckCircle2, Info, AlertTriangle, Cpu, Server, History, Activity, MessageSquare, Bot, X, Send, Loader2 } from "lucide-react";
+import CustomGantt from "@/components/gantt/CustomGantt";
 import AgentActivityTimeline from "./AgentActivityTimeline";
 import ValidationPanel from "./ValidationPanel";
 
@@ -11,6 +11,12 @@ export default function ExecutionPackage({ query, budget, complexity, time, imag
   const [taskId, setTaskId] = useState<string | null>(null);
   const [state, setState] = useState<any>(null);
   const [errorMsg, setErrorMsg] = useState("");
+  
+  // Chat Recommendation State
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatMessages, setChatMessages] = useState<{role: string, content: string}[]>([]);
+  const [chatInput, setChatInput] = useState("");
+  const [isChatLoading, setIsChatLoading] = useState(false);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -62,6 +68,35 @@ export default function ExecutionPackage({ query, budget, complexity, time, imag
     const type = path.split('/')[1];
     const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
     window.open(`${API_URL}/api/export/${type}/${filename}`, "_blank");
+  };
+
+  const handleChatSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!chatInput.trim()) return;
+
+    const userMessage = chatInput;
+    setChatMessages(prev => [...prev, { role: "user", content: userMessage }]);
+    setChatInput("");
+    setIsChatLoading(true);
+
+    try {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const payload = {
+        message: userMessage,
+        context: state
+      };
+      const res = await fetch(`${API_URL}/api/chat-recommendation`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      setChatMessages(prev => [...prev, { role: "assistant", content: data.response }]);
+    } catch (err) {
+      setChatMessages(prev => [...prev, { role: "assistant", content: "Error connecting to AI consultant." }]);
+    } finally {
+      setIsChatLoading(false);
+    }
   };
 
   if (!state && !taskId) {
@@ -177,9 +212,12 @@ export default function ExecutionPackage({ query, budget, complexity, time, imag
           </CardContent>
         </Card>
 
-        <Card className="bg-card/50 border-border/50">
-          <CardHeader>
+        <Card className="bg-card/50 border-border/50 relative overflow-hidden">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="flex items-center gap-2"><CheckCircle2 className="text-emerald-400" /> Engineering Recommendations</CardTitle>
+            <Button variant="ghost" size="icon" onClick={() => setChatOpen(!chatOpen)} className="rounded-full text-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/20">
+              <MessageSquare className="h-5 w-5" />
+            </Button>
           </CardHeader>
           <CardContent className="flex flex-col gap-3">
             {state.engineering_recommendations?.map((rec: any, idx: number) => {
@@ -190,6 +228,39 @@ export default function ExecutionPackage({ query, budget, complexity, time, imag
               </div>
             )})}
           </CardContent>
+
+          {/* Chat Panel Inline Overlay */}
+          {chatOpen && (
+            <div className="absolute inset-0 bg-card/95 backdrop-blur-md z-30 flex flex-col animate-in fade-in zoom-in-95 border-t border-indigo-500/30">
+              <div className="p-3 border-b border-border/50 flex justify-between items-center bg-indigo-500/10">
+                <h3 className="font-semibold flex items-center gap-2 text-sm"><Bot className="h-4 w-4 text-indigo-400"/> AI Consultant</h3>
+                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setChatOpen(false)}><X className="h-4 w-4" /></Button>
+              </div>
+              <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3 custom-scrollbar">
+                {chatMessages.length === 0 && (
+                   <p className="text-xs text-muted-foreground text-center mt-4">Ask me to verify any component alternative or technical choice probabilistically.</p>
+                )}
+                {chatMessages.map((m, idx) => (
+                  <div key={idx} className={`p-3 rounded-lg text-sm max-w-[90%] ${m.role === 'user' ? 'bg-indigo-600/20 text-indigo-100 self-end ml-auto' : 'bg-muted text-foreground self-start'}`}>
+                    <p className="whitespace-pre-wrap">{m.content}</p>
+                  </div>
+                ))}
+                {isChatLoading && <Loader2 className="animate-spin text-indigo-400 h-5 w-5 mx-auto mt-2" />}
+              </div>
+              <div className="p-3 border-t border-border/50 bg-background/50">
+                <form onSubmit={handleChatSubmit} className="flex gap-2">
+                  <input 
+                    type="text"
+                    value={chatInput} 
+                    onChange={(e) => setChatInput(e.target.value)} 
+                    placeholder="Ask about an alternative..." 
+                    className="flex-1 bg-muted/50 border border-border/50 rounded-md px-3 text-sm focus:outline-none focus:border-indigo-500"
+                  />
+                  <Button type="submit" size="sm" disabled={isChatLoading || !chatInput.trim()} className="bg-indigo-600 hover:bg-indigo-700 text-white px-3"><Send className="h-4 w-4"/></Button>
+                </form>
+              </div>
+            </div>
+          )}
         </Card>
       </div>
 
@@ -250,7 +321,7 @@ export default function ExecutionPackage({ query, budget, complexity, time, imag
           )})}
         </div>
         {state.gantt_tasks?.length > 0 ? (
-          <FrappeGantt tasks={state.gantt_tasks} />
+          <CustomGantt tasks={state.gantt_tasks} />
         ) : (
           <div className="p-8 text-center text-muted-foreground border rounded-md">No timeline tasks generated.</div>
         )}
