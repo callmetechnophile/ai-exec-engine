@@ -12,6 +12,24 @@ import FrappeGantt from "@/components/gantt/FrappeGantt";
 import CodeBlock from "@/components/code/CodeBlock";
 import ExecutionPackage from "@/components/ExecutionPackage";
 
+const ALL_SUGGESTIONS = [
+  { label: "Smart greenhouse", query: "Smart automated greenhouse with soil sensors" },
+  { label: "Facial recognition lock", query: "Raspberry Pi facial recognition door lock" },
+  { label: "Autonomous robot", query: "Arduino based autonomous obstacle avoiding robot" },
+  { label: "IoT weather station", query: "IoT weather station with cloud dashboard" },
+  { label: "Smart mirror", query: "Smart mirror displaying weather and news" },
+  { label: "Automated pet feeder", query: "Automated pet feeder with camera monitoring" },
+  { label: "Custom drone controller", query: "Custom drone flight controller from scratch" },
+  { label: "Voice-controlled lights", query: "Voice-controlled home automation light system" },
+  { label: "Air quality monitor", query: "Indoor air quality monitor with CO2 sensors" },
+  { label: "Automated plant waterer", query: "Self-watering plant system with moisture detection" },
+  { label: "Gesture RC car", query: "Gesture-controlled RC car using accelerometer" },
+  { label: "Smart inventory scale", query: "Smart scale for tracking kitchen inventory" },
+  { label: "Solar tracker", query: "Dual-axis solar tracker for maximum efficiency" },
+  { label: "Bionic robotic hand", query: "3D printed bionic robotic hand with flex sensors" },
+  { label: "Edge AI security cam", query: "Motion-activated security camera with edge AI" }
+];
+
 const COMPLEXITY_LEVELS = ["Easy", "Medium", "Hard"];
 const TIMEFRAMES = ["1 Hour", "1 Day", "1 Week", "1 Month", "6 Months"];
 
@@ -23,7 +41,19 @@ export default function Home() {
   const [budget, setBudget] = useState([1000]);
   const [errorMsg, setErrorMsg] = useState("");
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [randomSuggestions, setRandomSuggestions] = useState<{label: string, query: string}[]>([]);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+
+  useEffect(() => {
+    const savedSearches = localStorage.getItem('recentSearches');
+    if (savedSearches) {
+      setRecentSearches(JSON.parse(savedSearches));
+    }
+    
+    // Pick 4 random suggestions on client load
+    const shuffled = [...ALL_SUGGESTIONS].sort(() => 0.5 - Math.random());
+    setRandomSuggestions(shuffled.slice(0, 4));
+  }, []);
 
   // Deep Analysis State
   const [complexityIdx, setComplexityIdx] = useState([1]);
@@ -97,7 +127,9 @@ export default function Home() {
     setDeepResults(null); // Reset deep analysis
     try {
       if (!recentSearches.includes(searchQuery)) {
-        setRecentSearches(prev => [searchQuery, ...prev].slice(0, 5));
+        const updatedRecent = [searchQuery, ...recentSearches].slice(0, 5);
+        setRecentSearches(updatedRecent);
+        localStorage.setItem('recentSearches', JSON.stringify(updatedRecent));
       }
       
       const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -270,10 +302,15 @@ export default function Home() {
         <div className="flex flex-col items-center gap-6 w-full max-w-2xl mt-4">
           <div className="flex flex-col items-center gap-3 w-full">
             <span className="text-xs text-muted-foreground uppercase tracking-widest">Suggestions</span>
-            <div className="flex flex-wrap gap-2 justify-center w-full">
-              {["esp32 smart weather station", "arduino automated plant waterer", "raspberry pi object tracking camera", "stm32 flight controller"].map(suggestion => (
-                <Badge key={suggestion} variant="secondary" className="cursor-pointer hover:bg-primary/20 transition-colors" onClick={() => { setQuery(suggestion); handleSearch(suggestion); }}>
-                  {suggestion}
+            <div className="flex flex-wrap justify-center gap-2 max-w-2xl mt-4">
+              {randomSuggestions.map((suggestion, idx) => (
+                <Badge 
+                  key={idx} 
+                  variant="outline" 
+                  className="cursor-pointer hover:bg-muted text-xs md:text-sm px-3 py-1 bg-background/50 backdrop-blur-sm transition-all hover:scale-105 active:scale-95" 
+                  onClick={() => setQuery(suggestion.query)}
+                >
+                  {suggestion.label}
                 </Badge>
               ))}
             </div>
