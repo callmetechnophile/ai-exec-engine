@@ -8,7 +8,6 @@ import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Mic, Search, Loader2, Download, ExternalLink, ChevronRight, History, Sun, Moon, Star } from "lucide-react";
-import FrappeGantt from "@/components/gantt/FrappeGantt";
 import CodeBlock from "@/components/code/CodeBlock";
 import ExecutionPackage from "@/components/ExecutionPackage";
 
