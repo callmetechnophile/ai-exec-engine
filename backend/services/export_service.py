@@ -93,39 +93,50 @@ def generate_exports(data: dict) -> dict:
             pdf.cell(100, 10, txt=desc, border=1, ln=1)
         pdf.ln(5)
         
-        # Research Papers (IEEE)
+        # Research Papers Table
         pdf.set_font("Arial", size=14, style="B")
-        pdf.cell(200, 10, txt="Research Papers (IEEE)", ln=1)
-        pdf.set_font("Arial", size=10)
-        for i, p in enumerate(papers, 1):
-            title = str(p.get('title', 'Unknown')).encode('latin-1', 'replace').decode('latin-1')
-            url = str(p.get('url', '#')).encode('latin-1', 'replace').decode('latin-1')
+        pdf.cell(200, 10, txt="Research Papers", ln=1)
+        pdf.set_font("Arial", size=10, style="B")
+        pdf.cell(60, 10, txt="PAPER NAME", border=1)
+        pdf.cell(90, 10, txt="MAIN PURPOSE", border=1)
+        pdf.cell(40, 10, txt="LINK", border=1, ln=1)
+        pdf.set_font("Arial", size=8)
+        for p in papers:
+            title = str(p.get('title', 'Unknown'))[:35].encode('latin-1', 'replace').decode('latin-1')
+            purpose = str(p.get('summary', 'Research snippet'))[:65].encode('latin-1', 'replace').decode('latin-1')
+            url = str(p.get('url', '#'))
+            pdf.cell(60, 10, txt=title, border=1)
+            pdf.cell(90, 10, txt=purpose, border=1)
+            pdf.set_text_color(0, 0, 255)
+            pdf.cell(40, 10, txt="[Read Paper]", border=1, ln=1, link=url)
             pdf.set_text_color(0, 0, 0)
-            pdf.write(8, f"[{i}] {title}, [Online]. Available: ")
-            pdf.set_text_color(0, 0, 255) # Blue links
-            pdf.write(8, url, url)
-            pdf.ln(8)
-        pdf.set_text_color(0, 0, 0) # Reset color
         pdf.ln(5)
         
         # Recommendations
         pdf.set_font("Arial", size=14, style="B")
-        pdf.cell(200, 10, txt="Feasibility & Recommendations:", ln=1)
+        pdf.cell(200, 10, txt="Feasibility & Recommendations", ln=1)
         pdf.set_font("Arial", size=11)
         for r in data.get("engineering_recommendations", []):
             clean_text = str(r).encode('latin-1', 'replace').decode('latin-1')
-            pdf.multi_cell(0, 8, txt=f"- {clean_text}")
+            pdf.multi_cell(0, 8, txt=f"{chr(149)}  {clean_text}")
         pdf.ln(5)
         
-        # Gantt Timeline
+        # Gantt Timeline Table
         pdf.set_font("Arial", size=14, style="B")
-        pdf.cell(200, 10, txt="Gantt Timeline:", ln=1)
-        pdf.set_font("Arial", size=11)
+        pdf.cell(200, 10, txt="Gantt Chart Timeline", ln=1)
+        pdf.set_font("Arial", size=10, style="B")
+        pdf.cell(40, 10, txt="PHASE", border=1)
+        pdf.cell(90, 10, txt="WORK", border=1)
+        pdf.cell(60, 10, txt="TIME REQUIRED", border=1, ln=1)
+        pdf.set_font("Arial", size=8)
         for task in gantt:
-            name = str(task.get('name')).encode('latin-1', 'replace').decode('latin-1')
-            start = str(task.get('start'))
-            end = str(task.get('end'))
-            pdf.multi_cell(0, 8, txt=f"- {name} ({start} to {end})")
+            t_name = str(task.get('name', '')).encode('latin-1', 'replace').decode('latin-1')
+            phase = t_name.split(':')[0][:25] if ':' in t_name else "Execution"
+            work = t_name[:60]
+            time_req = f"{task.get('start')} to {task.get('end')}"
+            pdf.cell(40, 10, txt=phase, border=1)
+            pdf.cell(90, 10, txt=work, border=1)
+            pdf.cell(60, 10, txt=time_req, border=1, ln=1)
             
         pdf.output(os.path.join(EXPORT_DIR, "..", pdf_path))
     except Exception as e:
