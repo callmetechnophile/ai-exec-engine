@@ -7,7 +7,7 @@ import FrappeGantt from "@/components/gantt/FrappeGantt";
 import AgentActivityTimeline from "./AgentActivityTimeline";
 import ValidationPanel from "./ValidationPanel";
 
-export default function ExecutionPackage({ query, budget, complexity, time }: any) {
+export default function ExecutionPackage({ query, budget, complexity, time, imageUrl }: any) {
   const [taskId, setTaskId] = useState<string | null>(null);
   const [state, setState] = useState<any>(null);
   const [errorMsg, setErrorMsg] = useState("");
@@ -232,6 +232,14 @@ export default function ExecutionPackage({ query, budget, complexity, time }: an
       {/* Critical Path & Timeline */}
       <div className="flex flex-col gap-4">
         <h3 className="text-2xl font-bold flex items-center gap-2"><Info className="text-blue-400" /> Implementation Critical Path</h3>
+        
+        {imageUrl && (
+          <Card className="overflow-hidden bg-card/50 border-border/50 mb-6 w-full mx-auto shadow-xl">
+            <img src={imageUrl} alt="Prototype Image" className="w-full h-auto object-cover rounded-md" />
+            <div className="p-2 text-center text-xs text-muted-foreground bg-muted border-t border-border/50 font-semibold tracking-wider">PROTOTYPE IMAGE</div>
+          </Card>
+        )}
+
         <div className="flex flex-wrap gap-2 mb-6">
           {state.execution_plan?.map((step: any, idx: number) => {
             const label = typeof step === 'string' ? step : (step.name || step.title || JSON.stringify(step));

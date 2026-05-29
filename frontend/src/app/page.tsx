@@ -82,7 +82,6 @@ export default function Home() {
       
       if (data.text) {
         setQuery(data.text);
-        handleSearch(data.text);
       }
     } catch (error: any) {
       console.error("Audio processing failed", error);
@@ -228,8 +227,8 @@ export default function Home() {
           WORKFLOWGUIDE.AI
         </h1>
         <div className="flex flex-col gap-2">
-          <p className="text-lg sm:text-xl md:text-2xl font-bold tracking-widest text-muted-foreground uppercase opacity-80">
-            IDEA → EXECUTION
+          <p className="text-lg sm:text-xl md:text-2xl font-bold tracking-widest text-white uppercase opacity-80">
+            IDEA -&gt; RESEARCH -&gt; OPTIMIZE -&gt; EXECUTE
           </p>
           <p className="text-white italic">
             Hey Builder, Wassup! , Wanna build something new
@@ -557,6 +556,7 @@ export default function Home() {
                 budget={budget[0]} 
                 complexity={COMPLEXITY_LEVELS[complexityIdx[0]]} 
                 time={TIMEFRAMES[timeframeIdx[0]]} 
+                imageUrl={deepResults.generated_image}
               />
             </div>
           )}
@@ -573,6 +573,10 @@ export default function Home() {
           <span className="font-bold text-md">Star on GitHub</span>
           <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
         </Button>
+      </div>
+
+      <div className="mt-auto py-8 text-center text-sm font-bold tracking-[0.3em] text-muted-foreground">
+        MULTI-MODEL WEB AGENT
       </div>
     </main>
   );
