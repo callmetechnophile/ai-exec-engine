@@ -5,16 +5,15 @@ from huggingface_hub import AsyncInferenceClient
 
 HF_TOKEN = os.environ.get("HF_TOKEN")
 
-# Initialize the async client with the fal-ai provider
+# Initialize the async client
 client = AsyncInferenceClient(
-    provider="fal-ai",
     api_key=HF_TOKEN,
     timeout=120.0
 )
 
 async def generate_engineering_image(query: str) -> str:
     """
-    Uses Hugging Face InferenceClient (routed to fal-ai) to generate a realistic engineering concept image.
+    Uses Hugging Face InferenceClient to generate a realistic engineering concept image.
     Returns a base64 encoded data URI to be rendered in the frontend.
     """
     if not HF_TOKEN:
@@ -27,7 +26,7 @@ async def generate_engineering_image(query: str) -> str:
         # text_to_image returns a PIL Image
         image = await client.text_to_image(
             prompt,
-            model="Tongyi-MAI/Z-Image-Turbo",
+            model="stabilityai/stable-diffusion-xl-base-1.0",
         )
         
         # Convert the PIL Image to a Base64 data URI so Next.js can display it directly
