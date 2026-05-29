@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import json
-from services.llm_service import call_nvidia_nim
+from services.llm_router import execute_prompt
 
 router = APIRouter()
 
@@ -21,11 +21,10 @@ Then, provide a strict engineering reason for that probability. Keep it concise,
 
 Context of their current project (Budget, Complexity, Chosen Components, Recommendations):
 {json.dumps(req.context)}
+
+User Question: {req.message}
 """
-        response = call_nvidia_nim([
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": req.message}
-        ])
+        response = await execute_prompt(system_prompt, temperature=0.5, max_tokens=1024)
         
         return {"response": response}
     except Exception as e:
