@@ -262,7 +262,7 @@ export default function Home() {
             IDEA -&gt; RESEARCH -&gt; OPTIMIZE -&gt; EXECUTE
           </p>
           <p className="text-white italic">
-            Hey Builder, Wassup! , Wanna build something new
+            Hey Builder, What new ideas are running over your mind
           </p>
         </div>
 
