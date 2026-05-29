@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Mic, Search, Loader2, Download, ExternalLink, ChevronRight, History, Sun, Moon } from "lucide-react";
+import { Mic, Search, Loader2, Download, ExternalLink, ChevronRight, History, Sun, Moon, Star, Github } from "lucide-react";
 import FrappeGantt from "@/components/gantt/FrappeGantt";
 import CodeBlock from "@/components/code/CodeBlock";
 import ExecutionPackage from "@/components/ExecutionPackage";
@@ -562,6 +562,19 @@ export default function Home() {
           )}
         </div>
       )}
+
+      {/* Bottom Right GitHub Star Button */}
+      <div className="fixed bottom-6 right-6 z-50 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <Button 
+          variant="default" 
+          className="rounded-full shadow-2xl bg-indigo-600 hover:bg-indigo-700 text-white flex items-center gap-2 px-6 py-6"
+          onClick={() => window.open('https://github.com/callmetechnophile/ai-exec-engine', '_blank')}
+        >
+          <Github className="h-5 w-5" />
+          <span className="font-bold text-md">Star on GitHub</span>
+          <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+        </Button>
+      </div>
     </main>
   );
 }
