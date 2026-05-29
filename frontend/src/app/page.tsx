@@ -78,8 +78,10 @@ export default function Home() {
       mediaRecorderRef.current.ondataavailable = (event) => audioChunks.push(event.data);
 
       mediaRecorderRef.current.onstop = async () => {
-        const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-        await handleAudioUpload(audioBlob);
+        const mimeType = mediaRecorderRef.current?.mimeType || "audio/webm";
+        const audioBlob = new Blob(audioChunks, { type: mimeType });
+        const ext = mimeType.includes("mp4") ? "m4a" : "webm";
+        await handleAudioUpload(audioBlob, ext);
         stream.getTracks().forEach((track) => track.stop());
       };
 
@@ -98,11 +100,11 @@ export default function Home() {
     }
   };
 
-  const handleAudioUpload = async (audioBlob: Blob) => {
+  const handleAudioUpload = async (audioBlob: Blob, ext: string = "webm") => {
     setIsSearching(true);
     setErrorMsg("");
     const formData = new FormData();
-    formData.append("file", audioBlob, "recording.webm");
+    formData.append("file", audioBlob, `recording.${ext}`);
 
     try {
       const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
