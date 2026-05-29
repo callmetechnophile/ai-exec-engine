@@ -20,22 +20,33 @@ async def generate_engineering_image(query: str) -> str:
         print("Warning: HF_TOKEN not set in keys.env")
         return ""
         
-    try:
-        prompt = f"A realistic, high-quality, modern engineering concept rendering of: {query}. Professional lighting, 3d CAD style."
-        
-        # text_to_image returns a PIL Image
-        image = await client.text_to_image(
-            prompt,
-            model="stabilityai/stable-diffusion-xl-base-1.0",
-        )
-        
-        # Convert the PIL Image to a Base64 data URI so Next.js can display it directly
-        buffered = BytesIO()
-        image.save(buffered, format="PNG")
-        img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
-        
-        return f"data:image/png;base64,{img_str}"
-        
-    except Exception as e:
-        print(f"Error generating image with HF/fal.ai: {e}")
-        return ""
+    MODELS = [
+        "stabilityai/stable-diffusion-xl-base-1.0",
+        "black-forest-labs/FLUX.1-schnell",
+        "stabilityai/stable-diffusion-3.5-large",
+        "stabilityai/stable-diffusion-2",
+        "CompVis/stable-diffusion-v1-4",
+        "runwayml/stable-diffusion-v1-5"
+    ]
+    
+    prompt = f"A realistic, high-quality, modern engineering concept rendering of: {query}. Professional lighting, 3d CAD style."
+    
+    for model in MODELS:
+        try:
+            print(f"Attempting image generation with model: {model}")
+            image = await client.text_to_image(
+                prompt,
+                model=model,
+            )
+            
+            buffered = BytesIO()
+            image.save(buffered, format="PNG")
+            img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
+            return f"data:image/png;base64,{img_str}"
+            
+        except Exception as e:
+            print(f"Model {model} failed: {e}")
+            continue
+            
+    print("Error: All fallback image generation models failed on Hugging Face.")
+    return ""
