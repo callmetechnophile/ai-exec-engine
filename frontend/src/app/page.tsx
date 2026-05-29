@@ -612,8 +612,13 @@ export default function Home() {
         </Button>
       </div>
 
-      <div className="mt-auto py-8 text-center text-sm font-bold tracking-[0.3em] text-muted-foreground">
-        MULTI-MODEL WEB AGENT
+      <div className="mt-auto pt-12 pb-8 text-center flex flex-col items-center gap-2 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+        <div className="text-sm font-black tracking-[0.4em] bg-clip-text text-transparent bg-gradient-to-r from-orange-400 via-rose-500 to-purple-600 drop-shadow-lg">
+          MULTI-MODEL WEB AGENT
+        </div>
+        <div className="text-xs font-semibold tracking-widest text-muted-foreground uppercase opacity-80">
+          Organised Collection of IDEAS
+        </div>
       </div>
     </main>
   );
