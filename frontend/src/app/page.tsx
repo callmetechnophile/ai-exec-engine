@@ -208,7 +208,15 @@ export default function Home() {
 
   return (
     <main className="min-h-screen text-foreground p-8 flex flex-col items-center relative">
-      <div className="absolute top-4 right-8 z-50">
+      {/* Top Left Logo */}
+      <div className="absolute top-4 left-4 sm:left-8 z-50">
+        <a href="/" className="flex items-center hover:opacity-80 transition-opacity cursor-pointer">
+          <img src="/logo.png" alt="WorkflowGuide Logo" className="h-12 w-auto object-contain drop-shadow-md rounded-md" />
+        </a>
+      </div>
+
+      {/* Top Right Dark Mode Toggle */}
+      <div className="absolute top-4 right-4 sm:right-8 z-50">
         <Button variant="outline" size="icon" className="rounded-full shadow-lg" onClick={() => document.documentElement.classList.toggle('dark')}>
           <Sun className="h-5 w-5 dark:hidden" />
           <Moon className="h-5 w-5 hidden dark:block" />
