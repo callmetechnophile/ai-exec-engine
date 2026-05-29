@@ -125,6 +125,7 @@ export default function Home() {
       if (data.text) {
         setQuery(data.text);
       }
+      setIsSearching(false);
     } catch (error: any) {
       console.error("Audio processing failed", error);
       setErrorMsg(error.message);
