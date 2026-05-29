@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Mic, Search, Loader2, Download, ExternalLink, ChevronRight } from "lucide-react";
+import { Mic, Search, Loader2, Download, ExternalLink, ChevronRight, History, Sun, Moon } from "lucide-react";
 import FrappeGantt from "@/components/gantt/FrappeGantt";
 import CodeBlock from "@/components/code/CodeBlock";
 import ExecutionPackage from "@/components/ExecutionPackage";
@@ -22,6 +22,7 @@ export default function Home() {
   const [results, setResults] = useState<any>(null);
   const [budget, setBudget] = useState([1000]);
   const [errorMsg, setErrorMsg] = useState("");
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
 
   // Deep Analysis State
@@ -96,6 +97,10 @@ export default function Home() {
     setErrorMsg("");
     setDeepResults(null); // Reset deep analysis
     try {
+      if (!recentSearches.includes(searchQuery)) {
+        setRecentSearches(prev => [searchQuery, ...prev].slice(0, 5));
+      }
+      
       const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
       const res = await fetch(`${API_URL}/api/analyze-project`, {
         method: "POST",
@@ -202,14 +207,26 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen text-foreground p-8 flex flex-col items-center">
+    <main className="min-h-screen text-foreground p-8 flex flex-col items-center relative">
+      <div className="absolute top-4 right-8 z-50">
+        <Button variant="outline" size="icon" className="rounded-full shadow-lg" onClick={() => document.documentElement.classList.toggle('dark')}>
+          <Sun className="h-5 w-5 dark:hidden" />
+          <Moon className="h-5 w-5 hidden dark:block" />
+        </Button>
+      </div>
+
       <div className="w-full max-w-5xl flex flex-col items-center gap-8 mt-12 mb-12 text-center">
         <h1 className="text-4xl sm:text-6xl md:text-8xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-indigo-400 via-purple-400 to-emerald-400 drop-shadow-sm pb-2">
           WORKFLOWGUIDE.AI
         </h1>
-        <p className="text-lg sm:text-xl md:text-2xl font-bold tracking-widest text-muted-foreground uppercase opacity-80">
-          IDEA → EXECUTION
-        </p>
+        <div className="flex flex-col gap-2">
+          <p className="text-lg sm:text-xl md:text-2xl font-bold tracking-widest text-muted-foreground uppercase opacity-80">
+            IDEA → EXECUTION
+          </p>
+          <p className="text-muted-foreground italic">
+            Hey Builder, Wassup! , Wanna build something new
+          </p>
+        </div>
 
         <div className="relative w-full max-w-2xl flex items-center shadow-lg rounded-full overflow-hidden border border-border/50 bg-card/50 backdrop-blur-sm">
           <Input
@@ -241,6 +258,32 @@ export default function Home() {
               {isSearching ? <Loader2 className="animate-spin" /> : <Search />}
             </Button>
           </div>
+        </div>
+
+        <div className="flex flex-col items-center gap-6 w-full max-w-2xl mt-4">
+          <div className="flex flex-col items-center gap-3 w-full">
+            <span className="text-xs text-muted-foreground uppercase tracking-widest">Suggestions</span>
+            <div className="flex flex-wrap gap-2 justify-center w-full">
+              {["esp32 smart weather station", "arduino automated plant waterer", "raspberry pi object tracking camera", "stm32 flight controller"].map(suggestion => (
+                <Badge key={suggestion} variant="secondary" className="cursor-pointer hover:bg-primary/20 transition-colors" onClick={() => { setQuery(suggestion); handleSearch(suggestion); }}>
+                  {suggestion}
+                </Badge>
+              ))}
+            </div>
+          </div>
+
+          {recentSearches.length > 0 && (
+            <div className="flex flex-col items-center gap-3 w-full border-t border-border/50 pt-4">
+              <span className="text-xs text-muted-foreground uppercase tracking-widest flex items-center gap-1"><History className="h-3 w-3" /> Recent Searches</span>
+              <div className="flex flex-wrap gap-2 justify-center w-full">
+                {recentSearches.map(recent => (
+                  <Badge key={recent} variant="outline" className="cursor-pointer hover:bg-primary/10 transition-colors" onClick={() => { setQuery(recent); handleSearch(recent); }}>
+                    {recent}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
