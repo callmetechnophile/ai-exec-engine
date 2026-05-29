@@ -338,7 +338,7 @@ export default function ExecutionPackage({ query, budget, complexity, time, imag
         <Card className="overflow-hidden bg-card/50 border-border/50 mb-6 w-full mx-auto shadow-xl flex flex-col items-center justify-center p-8 min-h-[400px] relative group">
           {prototypeImage ? (
             <>
-              <img src={prototypeImage} alt="Prototype Rendering" className="w-full h-auto object-cover rounded-md absolute inset-0 z-0" />
+              <img src={prototypeImage} alt="Prototype Rendering" className="w-full h-full object-contain rounded-md absolute inset-0 z-0 p-4" />
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity z-10 flex items-center justify-center backdrop-blur-sm">
                 <Button onClick={downloadImage} size="lg" className="bg-pink-600 hover:bg-pink-700 text-white shadow-2xl flex items-center gap-2">
                   <Download className="h-5 w-5" /> Download Concept Image
