@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Download, CheckCircle2, Info, AlertTriangle, Cpu, Server, History, Activity, MessageSquare, Bot, X, Send, Loader2 } from "lucide-react";
-import CustomGantt from "@/components/gantt/CustomGantt";
+import { Download, CheckCircle2, Info, AlertTriangle, Cpu, Server, History, Activity, MessageSquare, Bot, X, Send, Loader2, Image as ImageIcon } from "lucide-react";
 import AgentActivityTimeline from "./AgentActivityTimeline";
 import ValidationPanel from "./ValidationPanel";
 
@@ -17,6 +16,38 @@ export default function ExecutionPackage({ query, budget, complexity, time, imag
   const [chatMessages, setChatMessages] = useState<{role: string, content: string}[]>([]);
   const [chatInput, setChatInput] = useState("");
   const [isChatLoading, setIsChatLoading] = useState(false);
+
+  // Prototype Image State
+  const [prototypeImage, setPrototypeImage] = useState<string | null>(null);
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+
+  const handleGenerateImage = async () => {
+    setIsGeneratingImage(true);
+    try {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const res = await fetch(`${API_URL}/api/generate-image`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query }),
+      });
+      const data = await res.json();
+      if (data.base64_image) {
+        setPrototypeImage(data.base64_image);
+      }
+    } catch (e) {
+      console.error("Image gen failed", e);
+    } finally {
+      setIsGeneratingImage(false);
+    }
+  };
+
+  const downloadImage = () => {
+    if (!prototypeImage) return;
+    const a = document.createElement("a");
+    a.href = prototypeImage;
+    a.download = "prototype-rendering.png";
+    a.click();
+  };
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -300,31 +331,38 @@ export default function ExecutionPackage({ query, budget, complexity, time, imag
         </Card>
       </div>
 
-      {/* Critical Path & Timeline */}
+      {/* Prototype Rendering Generation */}
       <div className="flex flex-col gap-4">
-        <h3 className="text-2xl font-bold flex items-center gap-2"><Info className="text-blue-400" /> Implementation Critical Path</h3>
+        <h3 className="text-2xl font-bold flex items-center gap-2"><ImageIcon className="text-pink-400" /> Prototype Rendering</h3>
         
-        {imageUrl && (
-          <Card className="overflow-hidden bg-card/50 border-border/50 mb-6 w-full mx-auto shadow-xl">
-            <img src={imageUrl} alt="Prototype Image" className="w-full h-auto object-cover rounded-md" />
-            <div className="p-2 text-center text-xs text-muted-foreground bg-muted border-t border-border/50 font-semibold tracking-wider">PROTOTYPE IMAGE</div>
-          </Card>
-        )}
-
-        <div className="flex flex-wrap gap-2 mb-6">
-          {state.execution_plan?.map((step: any, idx: number) => {
-            const label = typeof step === 'string' ? step : (step.name || step.title || JSON.stringify(step));
-            return (
-            <Badge key={idx} variant="secondary" className="px-3 py-1 text-sm bg-blue-500/20 text-blue-200 border-blue-500/30">
-              {idx + 1}. {label}
-            </Badge>
-          )})}
-        </div>
-        {state.gantt_tasks?.length > 0 ? (
-          <CustomGantt tasks={state.gantt_tasks} />
-        ) : (
-          <div className="p-8 text-center text-muted-foreground border rounded-md">No timeline tasks generated.</div>
-        )}
+        <Card className="overflow-hidden bg-card/50 border-border/50 mb-6 w-full mx-auto shadow-xl flex flex-col items-center justify-center p-8 min-h-[400px] relative group">
+          {prototypeImage ? (
+            <>
+              <img src={prototypeImage} alt="Prototype Rendering" className="w-full h-auto object-cover rounded-md absolute inset-0 z-0" />
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity z-10 flex items-center justify-center backdrop-blur-sm">
+                <Button onClick={downloadImage} size="lg" className="bg-pink-600 hover:bg-pink-700 text-white shadow-2xl flex items-center gap-2">
+                  <Download className="h-5 w-5" /> Download Concept Image
+                </Button>
+              </div>
+            </>
+          ) : (
+            <div className="flex flex-col items-center gap-4 z-10 text-center">
+              <div className="bg-pink-500/10 p-6 rounded-full border border-pink-500/20 mb-2">
+                <ImageIcon className="h-12 w-12 text-pink-400" />
+              </div>
+              <h4 className="text-xl font-bold text-white tracking-wide">Visualize Your Prototype</h4>
+              <p className="text-muted-foreground text-sm max-w-sm mb-4">Click below to generate a high-fidelity, 3D CAD style conceptual rendering of your architecture using Fal.ai.</p>
+              <Button 
+                onClick={handleGenerateImage} 
+                disabled={isGeneratingImage} 
+                size="lg" 
+                className="bg-pink-600/90 hover:bg-pink-600 text-white font-bold tracking-wider rounded-md border border-pink-500 shadow-lg shadow-pink-900/20 w-64 h-14"
+              >
+                {isGeneratingImage ? <><Loader2 className="mr-2 h-5 w-5 animate-spin"/> Rendering Engine...</> : "IMAGE GENERATION +"}
+              </Button>
+            </div>
+          )}
+        </Card>
       </div>
 
     </div>

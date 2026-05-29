@@ -5,8 +5,6 @@ from services.research_refinement_service import perform_agentic_research
 from services.scoring_service import calculate_readiness_score
 from services.execution_analysis_service import analyze_execution_architecture
 from services.optimization_service import optimize_components
-from services.gantt_service import generate_gantt_tasks
-from services.fal_service import generate_engineering_image
 from services.export_service import generate_exports
 
 router = APIRouter()
@@ -23,15 +21,11 @@ async def generate_execution_package(req: ExecutionRequest):
         score_task = asyncio.create_task(calculate_readiness_score(req.query, req.components, req.budget, req.complexity))
         analysis_task = asyncio.create_task(analyze_execution_architecture(req.query, req.components))
         opt_task = asyncio.create_task(optimize_components(req.components, req.budget, req.complexity, req.time))
-        gantt_task = asyncio.create_task(generate_gantt_tasks(req.query, req.time))
-        image_task = asyncio.create_task(generate_engineering_image(req.query))
         
         # Await all
         execution_score = await score_task
         analysis_data = await analysis_task
         optimized_comps = await opt_task
-        gantt_tasks = await gantt_task
-        image_url = await image_task
         
         # 3. Aggregate
         package_data = {
@@ -41,8 +35,8 @@ async def generate_execution_package(req: ExecutionRequest):
             "research_insights": logs + analysis_data.get("research_insights", []),
             "alternative_components": analysis_data.get("alternative_components", []),
             "critical_path": analysis_data.get("critical_path", []),
-            "gantt_tasks": gantt_tasks,
-            "generated_visualization": image_url
+            "gantt_tasks": [],
+            "generated_visualization": ""
         }
         
         # 4. Generate Export Files
