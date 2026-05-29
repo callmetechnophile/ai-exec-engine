@@ -80,9 +80,16 @@ export default function Home() {
       mediaRecorderRef.current.onstop = async () => {
         const mimeType = mediaRecorderRef.current?.mimeType || "audio/webm";
         const audioBlob = new Blob(audioChunks, { type: mimeType });
+        stream.getTracks().forEach((track) => track.stop());
+
+        if (audioBlob.size < 2000) {
+          setErrorMsg("Recording was too short. Please try speaking a bit longer.");
+          setIsSearching(false);
+          return;
+        }
+
         const ext = mimeType.includes("mp4") ? "m4a" : "webm";
         await handleAudioUpload(audioBlob, ext);
-        stream.getTracks().forEach((track) => track.stop());
       };
 
       mediaRecorderRef.current.start();
