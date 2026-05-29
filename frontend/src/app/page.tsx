@@ -10,6 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Mic, Search, Loader2, Download, ExternalLink, ChevronRight, History, Sun, Moon, Star } from "lucide-react";
 import CodeBlock from "@/components/code/CodeBlock";
 import ExecutionPackage from "@/components/ExecutionPackage";
+import CustomGantt from "@/components/gantt/CustomGantt";
 
 const ALL_SUGGESTIONS = [
   { label: "Smart greenhouse", query: "Smart automated greenhouse with soil sensors" },
@@ -573,7 +574,7 @@ export default function Home() {
                   </Button>
                 </div>
                 {deepResults.gantt_tasks?.length > 0 ? (
-                  <FrappeGantt tasks={deepResults.gantt_tasks} />
+                  <CustomGantt tasks={deepResults.gantt_tasks} />
                 ) : (
                   <div className="p-8 text-center text-muted-foreground border rounded-md">No timeline tasks generated.</div>
                 )}
