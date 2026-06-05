@@ -12,3 +12,4 @@ fal-client
 fpdf
 requests
 huggingface_hub
+pillow

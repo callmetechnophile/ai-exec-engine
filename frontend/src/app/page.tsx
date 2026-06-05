@@ -209,7 +209,9 @@ export default function Home() {
     setErrorMsg("");
     try {
       let allComponents: any[] = [];
-      if (results) {
+      if (deepResults?.optimized_components && deepResults.optimized_components.length > 0) {
+        allComponents = deepResults.optimized_components;
+      } else if (results) {
         ["electronics", "structural", "mechanical", "pneumatic", "fluid_power"].forEach(cat => {
           if (results[cat]) allComponents = allComponents.concat(results[cat]);
         });
