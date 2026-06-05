@@ -187,7 +187,7 @@ export default function ExecutionPackage({ query, budget, complexity, time, imag
               <Download className="mr-4 text-blue-400" /> Markdown (Obsidian/GitHub)
             </Button>
             <Button variant="outline" className="h-16 justify-start px-6" onClick={() => downloadFile(state.csv_export_path)}>
-              <Download className="mr-4 text-green-400" /> Timeline CSV (Notion)
+              <Download className="mr-4 text-green-400" /> Timeline CSV
             </Button>
             <Button variant="outline" className="h-16 justify-start px-6" onClick={() => downloadFile(state.json_export_path)}>
               <Download className="mr-4 text-yellow-400" /> Raw JSON Schema
