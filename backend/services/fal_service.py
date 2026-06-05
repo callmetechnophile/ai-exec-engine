@@ -91,7 +91,33 @@ async def generate_engineering_image(query: str) -> str:
         if attempt < 3:
             await asyncio.sleep(2.0)
  
-    # 2. Secondary Fallbacks: Hugging Face Free Tier
+    # 2. Secondary: Cloudflare Workers AI
+    CLOUDFLARE_ACCOUNT_ID = os.environ.get("CLOUDFLARE_ACCOUNT_ID")
+    CLOUDFLARE_API_TOKEN = os.environ.get("CLOUDFLARE_API_TOKEN")
+    
+    if CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN:
+        try:
+            print("Attempting image generation with Cloudflare Workers AI...")
+            # Using Dreamshaper or Stable Diffusion XL on Workers AI
+            url = f"https://api.cloudflare.com/client/v4/accounts/{CLOUDFLARE_ACCOUNT_ID}/ai/run/@cf/stabilityai/stable-diffusion-xl-base-1.0"
+            headers = {
+                "Authorization": f"Bearer {CLOUDFLARE_API_TOKEN}",
+                "Content-Type": "application/json"
+            }
+            payload = {
+                "prompt": prompt
+            }
+            async with httpx.AsyncClient() as client:
+                response = await client.post(url, headers=headers, json=payload, timeout=60.0)
+                if response.status_code == 200:
+                    img_str = base64.b64encode(response.content).decode("utf-8")
+                    return f"data:image/png;base64,{img_str}"
+                else:
+                    print(f"Cloudflare Workers AI failed with status: {response.status_code}, response: {response.text[:200]}")
+        except Exception as e:
+            print(f"Cloudflare Workers AI exception: {e}")
+
+    # 3. Tertiary Fallbacks: Hugging Face Free Tier
     if HF_TOKEN:
         print("Falling back to Hugging Face...")
         client = AsyncInferenceClient(api_key=HF_TOKEN, timeout=120.0)
