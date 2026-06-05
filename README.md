@@ -72,4 +72,3 @@ npm run dev
 - **Event-Driven UI**: Frontend actively polls the orchestrator pipeline, providing real-time timeline updates as agents hand off tasks to one another.
 
 ---
-Built with ❤️ for the Hackathon.
