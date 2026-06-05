@@ -209,7 +209,9 @@ export default function Home() {
     setErrorMsg("");
     try {
       let allComponents: any[] = [];
-      if (results) {
+      if (deepResults?.optimized_components && deepResults.optimized_components.length > 0) {
+        allComponents = deepResults.optimized_components;
+      } else if (results) {
         ["electronics", "structural", "mechanical", "pneumatic", "fluid_power"].forEach(cat => {
           if (results[cat]) allComponents = allComponents.concat(results[cat]);
         });
@@ -583,7 +585,7 @@ export default function Home() {
                 <div className="flex justify-between items-end">
                   <h2 className="text-2xl font-bold">Project Timeline</h2>
                   <Button variant="outline" onClick={downloadCSV}>
-                    <Download className="mr-2 h-4 w-4" /> Export CSV (Notion)
+                    <Download className="mr-2 h-4 w-4" /> Export CSV
                   </Button>
                 </div>
                 {deepResults.gantt_tasks?.length > 0 ? (

@@ -187,7 +187,7 @@ export default function ExecutionPackage({ query, budget, complexity, time, imag
               <Download className="mr-4 text-blue-400" /> Markdown (Obsidian/GitHub)
             </Button>
             <Button variant="outline" className="h-16 justify-start px-6" onClick={() => downloadFile(state.csv_export_path)}>
-              <Download className="mr-4 text-green-400" /> Timeline CSV (Notion)
+              <Download className="mr-4 text-green-400" /> Timeline CSV
             </Button>
             <Button variant="outline" className="h-16 justify-start px-6" onClick={() => downloadFile(state.json_export_path)}>
               <Download className="mr-4 text-yellow-400" /> Raw JSON Schema
@@ -351,7 +351,6 @@ export default function ExecutionPackage({ query, budget, complexity, time, imag
                 <ImageIcon className="h-12 w-12 text-pink-400" />
               </div>
               <h4 className="text-xl font-bold text-white tracking-wide">Visualize Your Prototype</h4>
-              <p className="text-muted-foreground text-sm max-w-sm mb-4">Click below to generate a high-fidelity, 3D CAD style conceptual rendering of your architecture using Fal.ai.</p>
               <Button 
                 onClick={handleGenerateImage} 
                 disabled={isGeneratingImage} 
